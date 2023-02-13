@@ -84,8 +84,23 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
+/* 上首至尊书法体 */
 @font-face {
   font-family: "ShangShouZhiZun";
   src: url("@/assets/fonts/No.39-ShangShouZhiZunShuFaTi-2.ttf");
+}
+/* 汉仪参考消息先驱体 */
+@font-face {
+  font-family: "HY";
+  src: url("@/assets/fonts/HYCanKaoXiaoXiXianQuTi-2.ttf");
+}
+/* 三极榜书简体 */
+@font-face {
+  font-family: "SJ";
+  src: url("@/assets/fonts/SanJiBangShuJianTi-2.ttf");
+}
+/* 晚夜微雨问海棠体 */
+@font-face {
+  font-family: "HT";
+  src: url("@/assets/fonts/WanYeWeiYuWenHaiTang-2.ttf");
 }

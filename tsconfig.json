@@ -5,12 +5,14 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "allowImportingTsExtensions":true
   },
 
   "references": [
     {
       "path": "./tsconfig.config.json"
     }
-  ]
+  ],
+  "allowImportingTsExtensions":true
 }

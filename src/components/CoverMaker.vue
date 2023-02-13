@@ -3,29 +3,58 @@
  * @Description: Description
  * @Author: Kerwin
  * @Date: 2023-02-12 20:56:28
- * @LastEditTime: 2023-02-13 17:58:35
+ * @LastEditTime: 2023-02-14 01:58:01
  * @LastEditors:  Please set LastEditors
 -->
+
 <script setup lang="ts">
 import { reactive, ref, computed } from "vue";
 import html2canvas from "html2canvas";
-import { pinyinUtil }:any from '@/plugin/pinyin_withtone.js'
-const name = ref("默认成语");
+import { pinyinUtil } from '@/plugin/pinyin_withtone.js';
+import { pickRandom } from '@/plugin/random_withidiom.ts';
+import { Download, MagicStick } from '@element-plus/icons-vue'
+const fontOptions = reactive([{
+  name: "上首至尊书法体",
+  value: "ShangShouZhiZun"
+}, {
+  name: "汉仪参考消息先驱体",
+  value: "HY"
+}, {
+  name: "三极榜书简体",
+  value: "SJ"
+}, {
+  name: "晚夜微雨问海棠体",
+  value: "HT"
+}])
 const form = reactive({
   name: "阳和启蛰",
   py: "yáng hé qǐ zhé",
+  font: fontOptions[0].value,
   desc: "指恶劣困苦的日子过去，顺利和美好的时光开始了",
 });
 const reg = new RegExp("[\\u4E00-\\u9FFF]+", "g");
 const py = computed(() => {
   if (!form.name) {
-    form.py = ''
-    return
+    form.py = ""
   }
   if (reg.test(form.name)) {
     form.py = pinyinUtil.getPinyin(form.name, ' ', true)
   }
 })
+
+const nameRef = ref()
+const setFont = () => {
+  nameRef.value.style.fontFamily = form.font
+}
+
+const doPickRandom = () => {
+  const { name, desc } = pickRandom()
+  form.name = name
+  form.desc = desc
+  form.py = pinyinUtil.getPinyin(form.name, ' ', true)
+}
+
+
 
 const loading = ref(false)
 // 图片生成
@@ -60,16 +89,25 @@ function clickGeneratePicture() {
   });
 };
 
+
 </script>
 
 <template>
   <div class="container">
-    <h3 class="tit">成语图片基本生成器 {{ py }}</h3>
+    <h3 class="tit">成语图片生成器 {{ py }}</h3>
     <div class="cBody">
       <div class="operationPanel">
-        <el-form :model="form">
+        <el-form :model="form" label-width="80px">
           <el-form-item label="成语名称">
-            <el-input v-model="form.name" />
+            <div style="display:flex">
+              <el-input v-model="form.name" /> <el-button style="margin-left: 10px;" type="primary" :icon="MagicStick"
+                circle @click="doPickRandom" />
+            </div>
+          </el-form-item>
+          <el-form-item label="字体选择">
+            <el-select v-model="form.font" @change="setFont">
+              <el-option :value="item.value" :label="item.name" v-for="item in fontOptions" :key="item.value" />
+            </el-select>
           </el-form-item>
           <el-form-item label="成语拼音">
             <el-input v-model="form.py" />
@@ -78,8 +116,8 @@ function clickGeneratePicture() {
             <el-input v-model="form.desc" type="textarea" rows="5" />
           </el-form-item>
           <el-form-item>
-            <el-button class="screenshotBtn button" type="primary" @click="clickGeneratePicture"
-              :loading="loading">生成图片</el-button>
+            <el-button class="screenshotBtn button" type="primary" @click="clickGeneratePicture" :loading="loading"
+              size="large" :icon="Download">保存图片</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -91,11 +129,11 @@ function clickGeneratePicture() {
         </center>
         <center class="cen">
           <p class="py">{{ form.py }}</p>
-          <p class="name">{{ form.name }}</p>
+          <p class="name" ref="nameRef">{{ form.name }}</p>
         </center>
         <center class="bot">
           <p>【释义】：</p>
-          <p>&nbsp;&nbsp;&nbsp;&nbsp; {{ form.desc }}</p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp; {{ form.desc }}。</p>
         </center>
       </div>
     </div>
@@ -106,7 +144,7 @@ function clickGeneratePicture() {
 
 <style scoped>
 .container {
-  padding: 30px 0;
+  padding: 0 0 30px 0;
 }
 
 .operationPanel {
@@ -116,11 +154,14 @@ function clickGeneratePicture() {
 
 .cBody {
   display: flex;
+  justify-content: space-evenly;
 }
 
 
 .tit {
-  margin-bottom: 20px;
+  margin-bottom: 26px;
+  font-size: 30px;
+  text-align: center;
 }
 
 .imgBox {
@@ -142,7 +183,7 @@ function clickGeneratePicture() {
 }
 
 .top {
-  margin-top: 30px;
+  margin-top: 20px;
   color: rgb(18, 2, 247);
   font-weight: 800;
   font-size: 16px;
@@ -155,8 +196,8 @@ function clickGeneratePicture() {
 }
 
 .cen .name {
-  font-size: 56px;
-  font-weight: 800;
+  font-size: 70px;
+  font-weight: normal;
   font-family: "ShangShouZhiZun";
   /* text-decoration: underline; */
 }
@@ -164,7 +205,8 @@ function clickGeneratePicture() {
 .bot {
   width: 70%;
   text-align: left;
-  margin-bottom: 145px;
+  margin-bottom: 100px;
+  min-height: 150px;
 }
 </style>
 
