@@ -3,20 +3,32 @@
  * @Description: Description
  * @Author: Kerwin
  * @Date: 2023-02-12 20:56:28
- * @LastEditTime: 2023-02-12 22:55:39
+ * @LastEditTime: 2023-02-13 17:58:35
  * @LastEditors:  Please set LastEditors
 -->
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { reactive, ref, computed } from "vue";
 import html2canvas from "html2canvas";
+import { pinyinUtil }:any from '@/plugin/pinyin_withtone.js'
 const name = ref("默认成语");
 const form = reactive({
   name: "阳和启蛰",
   py: "yáng hé qǐ zhé",
   desc: "指恶劣困苦的日子过去，顺利和美好的时光开始了",
 });
+const reg = new RegExp("[\\u4E00-\\u9FFF]+", "g");
+const py = computed(() => {
+  if (!form.name) {
+    form.py = ''
+    return
+  }
+  if (reg.test(form.name)) {
+    form.py = pinyinUtil.getPinyin(form.name, ' ', true)
+  }
+})
+
 const loading = ref(false)
-// 截图
+// 图片生成
 const imageWrapper = ref(null) as any;
 function clickGeneratePicture() {
   loading.value = true
@@ -52,35 +64,42 @@ function clickGeneratePicture() {
 
 <template>
   <div class="container">
-    <h3 class="tit">成语图片基本生成器</h3>
-    <el-form :model="form">
-      <el-form-item label="成语名称">
-        <el-input v-model="form.name" />
-      </el-form-item>
-      <el-form-item label="成语拼音">
-        <el-input v-model="form.py" />
-      </el-form-item>
-      <el-form-item label="成语释义">
-        <el-input v-model="form.desc" type="textarea" />
-      </el-form-item>
-    </el-form>
-    <el-button class="screenshotBtn button" type="primary" @click="clickGeneratePicture"
-      :loading="loading">生成图片</el-button>
+    <h3 class="tit">成语图片基本生成器 {{ py }}</h3>
+    <div class="cBody">
+      <div class="operationPanel">
+        <el-form :model="form">
+          <el-form-item label="成语名称">
+            <el-input v-model="form.name" />
+          </el-form-item>
+          <el-form-item label="成语拼音">
+            <el-input v-model="form.py" />
+          </el-form-item>
+          <el-form-item label="成语释义">
+            <el-input v-model="form.desc" type="textarea" rows="5" />
+          </el-form-item>
+          <el-form-item>
+            <el-button class="screenshotBtn button" type="primary" @click="clickGeneratePicture"
+              :loading="loading">生成图片</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
 
-    <div class="imgBox" ref="imageWrapper">
-      <center class="top">
-        <p>每天坚持学一句成语</p>
-        <p>一百天以后你将才华横溢出口成章</p>
-      </center>
-      <center class="cen">
-        <p class="py">{{ form.py }}</p>
-        <p class="name">{{ form.name }}</p>
-      </center>
-      <center class="bot">
-        <p>【释义】：</p>
-        <p>&nbsp;&nbsp;&nbsp;&nbsp; {{ form.desc }}</p>
-      </center>
+      <div class="imgBox" ref="imageWrapper">
+        <center class="top">
+          <p>每天坚持学一句成语</p>
+          <p>一百天以后你将才华横溢出口成章</p>
+        </center>
+        <center class="cen">
+          <p class="py">{{ form.py }}</p>
+          <p class="name">{{ form.name }}</p>
+        </center>
+        <center class="bot">
+          <p>【释义】：</p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp; {{ form.desc }}</p>
+        </center>
+      </div>
     </div>
+
   </div>
 
 </template>
@@ -89,6 +108,16 @@ function clickGeneratePicture() {
 .container {
   padding: 30px 0;
 }
+
+.operationPanel {
+  margin-right: 30px;
+  min-width: 30%;
+}
+
+.cBody {
+  display: flex;
+}
+
 
 .tit {
   margin-bottom: 20px;
