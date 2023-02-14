@@ -104,3 +104,7 @@ body {
   font-family: "HT";
   src: url("@/assets/fonts/WanYeWeiYuWenHaiTang-2.ttf");
 }
+@font-face {
+  font-family: "YMGY";
+  src: url("@/assets/fonts/玉米归雁体.ttf");
+}

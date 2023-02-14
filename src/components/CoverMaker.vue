@@ -3,7 +3,7 @@
  * @Description: Description
  * @Author: Kerwin
  * @Date: 2023-02-12 20:56:28
- * @LastEditTime: 2023-02-14 01:58:01
+ * @LastEditTime: 2023-02-14 17:23:28
  * @LastEditors:  Please set LastEditors
 -->
 
@@ -11,7 +11,7 @@
 import { reactive, ref, computed } from "vue";
 import html2canvas from "html2canvas";
 import { pinyinUtil } from '@/plugin/pinyin_withtone.js';
-import { pickRandom } from '@/plugin/random_withidiom.ts';
+import { pickRandom } from '@/plugin/random_withidiom.js';
 import { Download, MagicStick } from '@element-plus/icons-vue'
 const fontOptions = reactive([{
   name: "上首至尊书法体",
@@ -25,6 +25,13 @@ const fontOptions = reactive([{
 }, {
   name: "晚夜微雨问海棠体",
   value: "HT"
+}, {
+  name: "仿宋",
+  value: "fangsong"
+},
+{
+  name: "玉米归雁体",
+  value: "YMGY"
 }])
 const form = reactive({
   name: "阳和启蛰",
@@ -48,10 +55,14 @@ const setFont = () => {
 }
 
 const doPickRandom = () => {
-  const { name, desc } = pickRandom()
+  const { name, desc, py } = pickRandom()
   form.name = name
   form.desc = desc
-  form.py = pinyinUtil.getPinyin(form.name, ' ', true)
+  if (py) {
+    form.py = py
+  } else {
+    form.py = pinyinUtil.getPinyin(form.name, ' ', true)
+  }
 }
 
 
@@ -145,6 +156,7 @@ function clickGeneratePicture() {
 <style scoped>
 .container {
   padding: 0 0 30px 0;
+  color: var(--vt-c-indigo);
 }
 
 .operationPanel {
@@ -200,6 +212,7 @@ function clickGeneratePicture() {
   font-weight: normal;
   font-family: "ShangShouZhiZun";
   /* text-decoration: underline; */
+  color: inherit;
 }
 
 .bot {
