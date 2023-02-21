@@ -1,67 +1,57 @@
 <!--
- * @Description: Description
+ * @Description: NavBar
  * @Author: Kerwin
  * @Date: 2023-02-13 13:21:17
- * @LastEditTime: 2023-02-14 12:44:26
+ * @LastEditTime: 2023-02-17 15:21:48
  * @LastEditors:  Please set LastEditors
 -->
 <script setup lang="ts">
-import { reactive, ref, computed } from "vue";
-import router from "@/router"
-import { routes } from "@/router"
-import { Sunny, Moon } from "@element-plus/icons-vue";
-const activeIndex = ref("coverMaker")
-const handleSelect = (key: string, keyPath: string[]) => {
-    console.log(key, keyPath)
-    if (key == 'void') return
-    router.push({
-        path: key
-    })
-}
+import { ref, reactive } from 'vue';
+const props = defineProps({
+    title: String,
+    leftText: String,
+    leftArrow: Boolean,
+    fixed: Boolean,
+    className: String,
+    background: String
+})
 const isLight = ref(true)
-const toggleTheme = () => {
+const toggleTheme = (): void => {
     isLight.value = !isLight.value
     const el = document.documentElement
     el.setAttribute('data-theme', isLight.value ? 'light' : 'dark')
-    el.style['--el-color-primary'] = 'red'
-    const eleEl = getComputedStyle(el)
-    console.log(eleEl.getPropertyValue('--el-color-primary'))
-
 }
-const menu = reactive(routes)
+const onClickLeft = () => history.back();
+const themeVars = reactive({
+    navBarTextColor: "#333",
+    navBarIconColor: "#333",
+    navBarArrowSize: "18px",
+    navBarBackground: props.background || '#fff',
+})
 </script>
 
 <template>
-    <header class="header">
-        <el-menu :default-active="activeIndex" class="el-menu-demo border0" mode="horizontal" @select="handleSelect">
-            <el-menu-item index="0"><img class="logo" src="@/assets/img/long_logo.png" alt=""></el-menu-item>
-            <div class="flex-grow" />
-            <el-menu-item :index="item.path" v-for="item in menu" ::key="item.path">{{ item.name }}</el-menu-item>
-            <el-menu-item index="void" @click="toggleTheme"><span>切换主题</span> <el-icon :size="16">
-                    <Sunny v-if="!isLight" />
-                    <Moon v-else />
-                </el-icon> </el-menu-item>
-        </el-menu>
-    </header>
-
+    <van-config-provider :theme-vars="themeVars">
+        <van-nav-bar class="header" :class="[className]" placeholder :title="title" :left-text="leftText" z-index="100"
+            :left-arrow="leftArrow" :fixed="fixed" @click-left="onClickLeft" />
+    </van-config-provider>
 </template>
 
 <style scoped>
-.flex-grow {
-    flex-grow: 1;
+.header {}
+
+::v-deep .van-nav-bar__content {
+    height: 65px;
+    margin: auto;
 }
 
-.logo {
-    height: 50px;
-    border-radius: 4px;
+::v-deep .imgBg .van-nav-bar__content {
+    background: no-repeat center/100% url(@/assets/img/homeBg.png);
+    background-color: #f5f6f8;
 }
 
-.header {
-    padding: 10px 0;
-    margin-bottom: 30px
-}
-
-.border0 {
-    border-width: 0px;
+::v-deep .van-nav-bar__title {
+    font-size: 18px;
+    font-weight: 600;
 }
 </style>

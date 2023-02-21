@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import NavBar from './components/NavBar.vue'
 </script>
 
 <template>
   <div class="app">
-    <NavBar />
     <RouterView />
   </div>
 
@@ -15,5 +13,7 @@ import NavBar from './components/NavBar.vue'
 .app {
   display: flex;
   flex-direction: column;
+  font-size: 16px;
+  min-height: 100vh;
 }
 </style>
